@@ -24,6 +24,7 @@ import { NFTFacet } from "../../nft/NFTFacet.sol";
 import { CollateralFacet } from "../../market/CollateralFacet.sol";
 import { CompoundFacet } from "../../escrow/dapps/CompoundFacet.sol";
 import { AaveFacet } from "../../escrow/dapps/AaveFacet.sol";
+import { AaveClaimAaveFacet } from "../../escrow/dapps/AaveClaimAaveFacet.sol";
 import { PoolTogetherFacet } from "../../escrow/dapps/PoolTogetherFacet.sol";
 
 abstract contract ITellerDiamond is
@@ -41,6 +42,7 @@ abstract contract ITellerDiamond is
     NFTFacet,
     CompoundFacet,
     AaveFacet,
+    AaveClaimAaveFacet,
     PoolTogetherFacet,
     IDiamondCut,
     IDiamondLoupe
