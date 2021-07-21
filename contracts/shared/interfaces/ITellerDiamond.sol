@@ -32,6 +32,7 @@ import {
     CompoundClaimCompFacet
 } from "../../escrow/dapps/CompoundClaimComp.sol";
 import { AaveFacet } from "../../escrow/dapps/AaveFacet.sol";
+import { AaveClaimAaveFacet } from "../../escrow/dapps/AaveClaimAaveFacet.sol";
 import { PoolTogetherFacet } from "../../escrow/dapps/PoolTogetherFacet.sol";
 
 abstract contract ITellerDiamond is
@@ -51,6 +52,7 @@ abstract contract ITellerDiamond is
     CompoundFacet,
     CompoundClaimCompFacet,
     AaveFacet,
+    AaveClaimAaveFacet,
     PoolTogetherFacet,
     IDiamondCut,
     IDiamondLoupe
