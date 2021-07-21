@@ -72,11 +72,10 @@ async function claimAave(
     const escrowAddress = await diamond.getLoanEscrow(details.loan.id)
     const aaveBefore = await IncentiveController.getUserUnclaimedRewards(escrowAddress)
     const assets = [details.lendingToken.address]
-    // expect(BigNumber.from(aaveBefore).gt(0)).to.equal(true)
-    const claim = await diamond
+    expect(BigNumber.from(aaveBefore).gt(0)).to.equal(true)
+    await diamond
       .connect(details.borrower.signer)
       .aaveClaimAave(details.loan.id, aaveBefore, assets)
-    console.log({claim: claim})
     const aaveAfter = await IncentiveController.getUserUnclaimedRewards(escrowAddress)
     expect(aaveAfter.toString()).to.equal('0')
   }
@@ -116,10 +115,9 @@ export const aaveClaimTest = async (hre: HardhatRuntimeEnvironment): Promise<voi
     })
   const escrowAddress = await diamond.getLoanEscrow(details.loan.id)
   const aaveBefore = await IncentiveController.getUserUnclaimedRewards(escrowAddress)
-  console.log({aaveBefore: aaveBefore.toString()})
   //read the state and determine if this should pass
   if (!loan) shouldPass = false
-  // if (aaveBefore.lte(0)) shouldPass = false
+  if (aaveBefore.lte(0)) shouldPass = false
   if (shouldPass) {
     await claimAave(hre, loan)
   } else {
