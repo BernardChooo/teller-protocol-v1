@@ -4,7 +4,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { Test } from 'mocha'
 
 import { TestAction, TestScenario } from '../story-helpers'
-import { aaveLendTest } from './dapp-utils/aave.utils'
+import { aaveClaimTest,aaveLendTest } from './dapp-utils/aave.utils'
 import { compoundClaimTest,compoundLendTest } from './dapp-utils/compound.utils'
 import { pooltogetherLendTest } from './dapp-utils/pooltogether.utils'
 import { sushiswapSwapTest } from './dapp-utils/sushiswap.utils'
@@ -45,7 +45,6 @@ export default class DappStoryTestDriver extends StoryTestDriver {
     action: TestAction,
     testSuite: Mocha.Suite
   ): Test[] {
-    // const _ = testSuite.tests
     const tests: Test[] = []
     const actionParentType = action.actionParentType
     switch (actionParentType) {
@@ -111,7 +110,6 @@ export default class DappStoryTestDriver extends StoryTestDriver {
     action: TestAction,
     tests: Test[]
   ): Promise<void> {
-    const { getNamedSigner } = hre
     const dapp = action.actionType
     switch (dapp) {
       case 'UNISWAP': {
@@ -143,6 +141,13 @@ export default class DappStoryTestDriver extends StoryTestDriver {
       case 'COMPOUND': {
         const newTest = new Test('COMPOUND Claim COMP', async () => {
           await compoundClaimTest(hre)
+        })
+        tests.push(newTest)
+        break
+      }
+      case 'AAVE': {
+        const newTest = new Test('AAVE Claim AAVE', async () => {
+          await aaveClaimTest(hre)
         })
         tests.push(newTest)
         break
