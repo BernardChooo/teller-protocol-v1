@@ -115,7 +115,7 @@ const deployProtocol: DeployFunction = async (hre) => {
     },
     {
       contract: 'CreateLoanFacet',
-      skipIfAlreadyDeployed: true,
+      skipIfAlreadyDeployed: false,
     },
     {
       contract: 'LoanDataFacet',
@@ -144,6 +144,10 @@ const deployProtocol: DeployFunction = async (hre) => {
       contract: 'AaveClaimAaveFacet',
       skipIfAlreadyDeployed: false,
       args: [dappAddresses.aaveIncentivesControllerAddress],
+    },
+    {
+      contract: 'YearnFacet',
+      skipIfAlreadyDeployed: false,
     },
     {
       contract: 'PoolTogetherFacet',
