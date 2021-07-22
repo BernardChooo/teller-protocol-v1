@@ -29,7 +29,7 @@ describe('NFT Dictionary', () => {
     let diamond: ITellerDiamond
 
     before(async () => {
-      await hre.deployments.fixture(['market'], {
+      await hre.deployments.fixture(['markets'], {
         keepExistingDeployments: true,
       })
 
