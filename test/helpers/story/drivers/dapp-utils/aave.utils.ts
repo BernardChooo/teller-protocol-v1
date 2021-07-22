@@ -1,11 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import chai, { expect } from 'chai'
 import { solidity } from 'ethereum-waffle'
-import { HardhatRuntimeEnvironment } from "hardhat/types"
+import { HardhatRuntimeEnvironment } from 'hardhat/types'
 
 import { getDappAddresses } from '../../../../../config'
-import { IAaveIncentivesController,IAToken } from "../../../../../types/typechain"
-import { LoanHelpersReturn } from "../../../loans"
+import { IAaveIncentivesController,IAToken } from '../../../../../types/typechain'
+import { LoanHelpersReturn } from '../../../loans'
 import LoanStoryTestDriver from '../loan-story-test-driver'
 chai.should()
 chai.use(solidity)
