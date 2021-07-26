@@ -4,8 +4,11 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { Test } from 'mocha'
 
 import { TestAction, TestScenario } from '../story-helpers'
-import { aaveClaimTest,aaveLendTest } from './dapp-utils/aave.utils'
-import { compoundClaimTest,compoundLendTest } from './dapp-utils/compound.utils'
+import { aaveClaimTest, aaveLendTest } from './dapp-utils/aave.utils'
+import {
+  compoundClaimTest,
+  compoundLendTest,
+} from './dapp-utils/compound.utils'
 import { poolTogetherLendTest } from './dapp-utils/poolTogether.utils'
 import { sushiswapSwapTest } from './dapp-utils/sushiswap.utils'
 import { uniswapSwapTest } from './dapp-utils/uniswap.utils'
@@ -155,5 +158,5 @@ export default class DappStoryTestDriver extends StoryTestDriver {
       default:
         break
     }
-  }  
+  }
 }

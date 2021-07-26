@@ -4,83 +4,95 @@ import { solidity } from 'ethereum-waffle'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 
 import { getDappAddresses } from '../../../../../config'
-import { IAaveIncentivesController,IAToken } from '../../../../../types/typechain'
+import {
+  IAaveIncentivesController,
+  IAToken,
+} from '../../../../../types/typechain'
 import { LoanHelpersReturn } from '../../../loans'
 import LoanStoryTestDriver from '../loan-story-test-driver'
 chai.should()
 chai.use(solidity)
 
 async function lendAave(
-    hre: HardhatRuntimeEnvironment,
-    loan: LoanHelpersReturn
-  ): Promise<void> {
-    const { contracts } = hre
-    const { details, diamond } = loan
-    const aToken = await contracts.get<IAToken>('IAToken', {
-      at: await diamond.getAssetAToken(details.lendingToken.address),
-    })
-    await diamond
-      .connect(details.borrower.signer)
-      .aaveDeposit(
-        details.loan.id,
-        details.loan.lendingToken,
-        details.loan.borrowedAmount
-      )
+  hre: HardhatRuntimeEnvironment,
+  loan: LoanHelpersReturn
+): Promise<void> {
+  const { contracts } = hre
+  const { details, diamond } = loan
+  const aToken = await contracts.get<IAToken>('IAToken', {
+    at: await diamond.getAssetAToken(details.lendingToken.address),
+  })
+  await diamond
+    .connect(details.borrower.signer)
+    .aaveDeposit(
+      details.loan.id,
+      details.loan.lendingToken,
+      details.loan.borrowedAmount
+    )
 
-    const escrowAddress = await diamond.getLoanEscrow(details.loan.id)
+  const escrowAddress = await diamond.getLoanEscrow(details.loan.id)
 
-    const aDaiBalance = await aToken.balanceOf(escrowAddress)
+  const aDaiBalance = await aToken.balanceOf(escrowAddress)
 
-    aDaiBalance.eq(details.loan.borrowedAmount).should.eql(true, '')
+  aDaiBalance.eq(details.loan.borrowedAmount).should.eql(true, '')
 
-    const tokenAddresses = await diamond.getEscrowTokens(details.loan.id)
-    tokenAddresses.should.include(aToken.address)
-  }
+  const tokenAddresses = await diamond.getEscrowTokens(details.loan.id)
+  tokenAddresses.should.include(aToken.address)
+}
 
-  async function withdrawAave(
-    hre: HardhatRuntimeEnvironment,
-    loan: LoanHelpersReturn
-  ): Promise<void> {
-    const { contracts } = hre
-    const { details, diamond } = loan
-    const aToken = await contracts.get<IAToken>('IAToken', {
-      at: await diamond.getAssetAToken(details.lendingToken.address),
-    })
-    await diamond
-      .connect(details.borrower.signer)
-      .aaveWithdrawAll(details.loan.id, details.lendingToken.address)
+async function withdrawAave(
+  hre: HardhatRuntimeEnvironment,
+  loan: LoanHelpersReturn
+): Promise<void> {
+  const { contracts } = hre
+  const { details, diamond } = loan
+  const aToken = await contracts.get<IAToken>('IAToken', {
+    at: await diamond.getAssetAToken(details.lendingToken.address),
+  })
+  await diamond
+    .connect(details.borrower.signer)
+    .aaveWithdrawAll(details.loan.id, details.lendingToken.address)
 
-    const escrowAddress = await diamond.getLoanEscrow(details.loan.id)
+  const escrowAddress = await diamond.getLoanEscrow(details.loan.id)
 
-    const tokenAddresses = await diamond.getEscrowTokens(details.loan.id)
-    tokenAddresses.should.not.include(aToken.address)
+  const tokenAddresses = await diamond.getEscrowTokens(details.loan.id)
+  tokenAddresses.should.not.include(aToken.address)
 
-    const aDaiBalance = await aToken.balanceOf(escrowAddress)
-    aDaiBalance.eq(0).should.eql(true, '')
-  }
+  const aDaiBalance = await aToken.balanceOf(escrowAddress)
+  aDaiBalance.eq(0).should.eql(true, '')
+}
 
 async function claimAave(
-    hre: HardhatRuntimeEnvironment,
-    loan: LoanHelpersReturn
-  ): Promise<void> {
-    const { contracts, network } = hre
-    const { details, diamond } = loan
-    const dappAddresses = getDappAddresses(network)
-    const IncentiveController = await contracts.get<IAaveIncentivesController>('IAaveIncentivesController', {
+  hre: HardhatRuntimeEnvironment,
+  loan: LoanHelpersReturn
+): Promise<void> {
+  const { contracts, network } = hre
+  const { details, diamond } = loan
+  const dappAddresses = getDappAddresses(network)
+  const IncentiveController = await contracts.get<IAaveIncentivesController>(
+    'IAaveIncentivesController',
+    {
       at: dappAddresses.aaveIncentivesControllerAddress,
-    })
-    const escrowAddress = await diamond.getLoanEscrow(details.loan.id)
-    const aaveBefore = await IncentiveController.getUserUnclaimedRewards(escrowAddress)
-    const assets = [details.lendingToken.address]
-    expect(BigNumber.from(aaveBefore).gt(0)).to.equal(true)
-    await diamond
-      .connect(details.borrower.signer)
-      .aaveClaimAave(details.loan.id, aaveBefore, assets)
-    const aaveAfter = await IncentiveController.getUserUnclaimedRewards(escrowAddress)
-    expect(aaveAfter.toString()).to.equal('0')
-  }
+    }
+  )
+  const escrowAddress = await diamond.getLoanEscrow(details.loan.id)
+  const aaveBefore = await IncentiveController.getUserUnclaimedRewards(
+    escrowAddress
+  )
+  const assets = [details.lendingToken.address]
+  expect(BigNumber.from(aaveBefore).gt(0)).to.equal(true)
+  await diamond
+    .connect(details.borrower.signer)
+    .aaveClaimAave(details.loan.id, aaveBefore, assets)
+  const aaveAfter = await IncentiveController.getUserUnclaimedRewards(
+    escrowAddress
+  )
+  expect(aaveAfter.toString()).to.equal('0')
+}
 
-export const aaveLendTest = async (hre: HardhatRuntimeEnvironment): Promise<void> => {
+export const aaveLendTest = async (
+  hre: HardhatRuntimeEnvironment
+): Promise<void> => {
   const { getNamedSigner } = hre
   const borrower = await getNamedSigner('borrower')
   const loan = await LoanStoryTestDriver.getLoan(hre, borrower)
@@ -102,7 +114,9 @@ export const aaveLendTest = async (hre: HardhatRuntimeEnvironment): Promise<void
   }
 }
 
-export const aaveClaimTest = async (hre: HardhatRuntimeEnvironment): Promise<void> => {
+export const aaveClaimTest = async (
+  hre: HardhatRuntimeEnvironment
+): Promise<void> => {
   const { getNamedSigner, contracts, network } = hre
   const borrower = await getNamedSigner('borrower')
   const loan = await LoanStoryTestDriver.getLoan(hre, borrower)
@@ -110,11 +124,16 @@ export const aaveClaimTest = async (hre: HardhatRuntimeEnvironment): Promise<voi
   let shouldPass = true
   await hre.evm.advanceTime(details.loan.duration)
   const dappAddresses = getDappAddresses(network)
-  const IncentiveController = await contracts.get<IAaveIncentivesController>('IAaveIncentivesController', {
+  const IncentiveController = await contracts.get<IAaveIncentivesController>(
+    'IAaveIncentivesController',
+    {
       at: dappAddresses.aaveIncentivesControllerAddress,
-    })
+    }
+  )
   const escrowAddress = await diamond.getLoanEscrow(details.loan.id)
-  const aaveBefore = await IncentiveController.getUserUnclaimedRewards(escrowAddress)
+  const aaveBefore = await IncentiveController.getUserUnclaimedRewards(
+    escrowAddress
+  )
   //read the state and determine if this should pass
   if (!loan) shouldPass = false
   if (aaveBefore.lte(0)) shouldPass = false
@@ -126,4 +145,3 @@ export const aaveClaimTest = async (hre: HardhatRuntimeEnvironment): Promise<voi
     })
   }
 }
-

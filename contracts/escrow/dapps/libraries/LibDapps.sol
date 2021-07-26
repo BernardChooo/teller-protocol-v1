@@ -59,23 +59,9 @@ library LibDapps {
     {
         return
             IAToken(
-                getAaveLendingPool(aaveLPAddressProvider)
-                    .getReserveData(tokenAddress)
-                    .aTokenAddress
-            );
-    }
-
-    /**
-        @notice Grabs the yVault address for a token from the asset settings.
-        @param tokenAddress The underlying token address for the associated yVault.
-        @return yVault instance.
-     */
-    function getYVault(address tokenAddress) internal view returns (IVault) {
-        return
-            IVault(
-                AppStorageLib.store().assetSettings[tokenAddress].addresses[
-                    keccak256("yVaultAddress")
-                ]
+                getAaveLendingPool(aaveLPAddressProvider).getReserveData(
+                    tokenAddress
+                ).aTokenAddress
             );
     }
 }

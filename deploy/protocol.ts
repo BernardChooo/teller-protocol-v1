@@ -146,10 +146,6 @@ const deployProtocol: DeployFunction = async (hre) => {
       args: [dappAddresses.aaveIncentivesControllerAddress],
     },
     {
-      contract: 'YearnFacet',
-      skipIfAlreadyDeployed: false,
-    },
-    {
       contract: 'PoolTogetherFacet',
       skipIfAlreadyDeployed: false,
     },
@@ -177,6 +173,11 @@ const deployProtocol: DeployFunction = async (hre) => {
           skipIfAlreadyDeployed: false,
           args: [dappAddresses.compoundComptrollerAddress],
         }
+        // disable for now
+        // {
+        //   contract: 'YearnFacet',
+        //   skipIfAlreadyDeployed: false,
+        // }
       )
 
       break
