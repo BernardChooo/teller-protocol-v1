@@ -143,11 +143,12 @@ const deployProtocol: DeployFunction = async (hre) => {
     {
       contract: 'AaveClaimAaveFacet',
       skipIfAlreadyDeployed: false,
-      args: [dappAddresses.aaveIncentivesControllerAddress, networkName == 'polygon' ? dappAddresses.aaveRewardTokenAddress : dappAddresses.aaveStakeTokenAddress],
-    },
-    {
-      contract: 'YearnFacet',
-      skipIfAlreadyDeployed: false,
+      args: [
+        dappAddresses.aaveIncentivesControllerAddress,
+        networkName == 'polygon'
+          ? dappAddresses.aaveRewardTokenAddress
+          : dappAddresses.aaveStakeTokenAddress,
+      ],
     },
     {
       contract: 'PoolTogetherFacet',
@@ -177,6 +178,11 @@ const deployProtocol: DeployFunction = async (hre) => {
           skipIfAlreadyDeployed: false,
           args: [dappAddresses.compoundComptrollerAddress],
         }
+        // disable for now
+        // {
+        //   contract: 'YearnFacet',
+        //   skipIfAlreadyDeployed: false,
+        // }
       )
 
       break
