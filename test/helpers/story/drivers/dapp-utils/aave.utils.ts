@@ -78,6 +78,8 @@ async function claimAave(
       .aaveClaimAave(details.loan.id, aaveBefore, assets)
     const aaveAfter = await IncentiveController.getUserUnclaimedRewards(escrowAddress)
     expect(aaveAfter.toString()).to.equal('0')
+    const aaveToken = await contracts.get<IAToken>('IAToken')
+    expect(await aaveToken.balanceOf(details.borrower.address)).to.equal(aaveBefore)
   }
 
 export const aaveLendTest = async (hre: HardhatRuntimeEnvironment): Promise<void> => {
