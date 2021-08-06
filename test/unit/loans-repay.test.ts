@@ -22,7 +22,6 @@ chai.use(solidity)
 const { getNamedSigner, contracts, tokens, ethers, evm, toBN } = hre
 
 describe('Loans', () => {
-  console.log('teest loans ')
   getMarkets(hre.network).forEach(testLoans)
 
   function testLoans(market: Market): void {
@@ -149,7 +148,6 @@ describe('Loans', () => {
               // get helpers
 
               const borrower = await getNamedSigner('borrower')
-
               const { nfts, getHelpers } = await takeOutLoanWithNfts(hre, {
                 amount: 100,
                 lendToken: market.lendingToken,
@@ -178,7 +176,6 @@ describe('Loans', () => {
 
             it('should be able to create and repay a loan', async () => {
               const borrower = await getNamedSigner('borrower')
-
               const { getHelpers } = await takeOutLoanWithNfts(hre, {
                 amount: 100, //should use raw amt not formatted.. oh well
                 lendToken: market.lendingToken,
